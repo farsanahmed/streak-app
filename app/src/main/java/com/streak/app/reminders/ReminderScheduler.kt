@@ -28,6 +28,8 @@ class ReminderScheduler(context: Context) {
             cancel(habit.id)
             return
         }
+        // Drop a previously scheduled reminder (e.g. when the time changed) before queueing the new one.
+        cancel(habit.id)
         val hour = habit.reminderHour ?: return
         val minute = habit.reminderMinute ?: return
         val now = ZonedDateTime.now()
