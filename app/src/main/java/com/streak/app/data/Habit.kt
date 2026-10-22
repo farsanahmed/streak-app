@@ -1,7 +1,6 @@
 package com.streak.app.data
 
 import androidx.room.Entity
-import androidx.room.Ignore
 import androidx.room.PrimaryKey
 
 /**
@@ -17,8 +16,8 @@ data class Habit(
     val reminderHour: Int? = null,
     val reminderMinute: Int? = null,
     val createdAt: Long = System.currentTimeMillis()
-) {
-    @Ignore
-    val hasReminder: Boolean
-        get() = reminderHour != null && reminderMinute != null
-}
+)
+
+/** True when the habit has a daily reminder time configured. */
+val Habit.hasReminder: Boolean
+    get() = reminderHour != null && reminderMinute != null
