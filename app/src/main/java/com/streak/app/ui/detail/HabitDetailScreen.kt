@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -128,6 +127,7 @@ fun HabitDetailScreen(
                 Row(modifier = Modifier.fillMaxWidth()) {
                     week.forEach { day ->
                         DayCell(
+                            modifier = Modifier.weight(1f),
                             epochDay = day,
                             done = state.completedDays.contains(day),
                             isToday = day == today,
@@ -174,7 +174,7 @@ private fun StatCard(modifier: Modifier, label: String, value: String) {
 }
 
 @Composable
-private fun RowScope.WeekdayHeader() {
+private fun WeekdayHeader() {
     Row(modifier = Modifier.fillMaxWidth()) {
         repeat(COLUMNS) { index ->
             val dayOfWeek = DayOfWeek.of(index + 1)
@@ -190,7 +190,13 @@ private fun RowScope.WeekdayHeader() {
 }
 
 @Composable
-private fun RowScope.DayCell(epochDay: Long, done: Boolean, isToday: Boolean, onClick: () -> Unit) {
+private fun DayCell(
+    modifier: Modifier,
+    epochDay: Long,
+    done: Boolean,
+    isToday: Boolean,
+    onClick: () -> Unit
+) {
     val shape = RoundedCornerShape(10.dp)
     val background = when {
         done -> MaterialTheme.colorScheme.primary
@@ -202,8 +208,7 @@ private fun RowScope.DayCell(epochDay: Long, done: Boolean, isToday: Boolean, on
         else -> MaterialTheme.colorScheme.onSurfaceVariant
     }
     Box(
-        modifier = Modifier
-            .weight(1f)
+        modifier = modifier
             .aspectRatio(1f)
             .padding(3.dp)
             .background(color = background, shape = shape)
