@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Card
 import androidx.compose.material3.Checkbox
@@ -30,13 +31,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.streak.app.data.HabitWithStatus
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    habits: List<HabitUi>,
-    onToggle: (HabitUi) -> Unit,
-    onOpen: (HabitUi) -> Unit,
+    habits: List<HabitWithStatus>,
+    onToggle: (HabitWithStatus) -> Unit,
+    onOpen: (HabitWithStatus) -> Unit,
+    onEdit: (HabitWithStatus) -> Unit,
     onAdd: () -> Unit,
     onSettings: () -> Unit,
     modifier: Modifier = Modifier
@@ -69,8 +72,8 @@ fun HomeScreen(
                 contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                items(items = habits, key = { it.id }) { habit ->
-                    HabitCard(habit = habit, onToggle = onToggle, onOpen = onOpen)
+                items(items = habits, key = { it.habit.id }) { item ->
+                    HabitCard(item = item, onToggle = onToggle, onOpen = onOpen, onEdit = onEdit)
                 }
             }
         }
@@ -79,24 +82,26 @@ fun HomeScreen(
 
 @Composable
 private fun HabitCard(
-    habit: HabitUi,
-    onToggle: (HabitUi) -> Unit,
-    onOpen: (HabitUi) -> Unit
+    item: HabitWithStatus,
+    onToggle: (HabitWithStatus) -> Unit,
+    onOpen: (HabitWithStatus) -> Unit,
+    onEdit: (HabitWithStatus) -> Unit
 ) {
+    val habit = item.habit
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onOpen(habit) }
+            .clickable { onOpen(item) }
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 8.dp, vertical = 12.dp),
+                .padding(start = 8.dp, end = 4.dp, top = 12.dp, bottom = 12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Checkbox(
-                checked = habit.doneToday,
-                onCheckedChange = { onToggle(habit) }
+                checked = item.doneToday,
+                onCheckedChange = { onToggle(item) }
             )
             Text(
                 text = habit.emoji,
@@ -110,19 +115,16 @@ private fun HabitCard(
                     fontWeight = FontWeight.SemiBold
                 )
                 Text(
-                    text = streakLabel(habit.streak),
+                    text = if (item.doneToday) "Done today" else "Not done yet",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
+            IconButton(onClick = { onEdit(item) }) {
+                Icon(imageVector = Icons.Default.Edit, contentDescription = "Edit habit")
+            }
         }
     }
-}
-
-private fun streakLabel(streak: Int): String = when (streak) {
-    0 -> "No streak yet"
-    1 -> "1 day streak"
-    else -> "$streak day streak"
 }
 
 @Composable
