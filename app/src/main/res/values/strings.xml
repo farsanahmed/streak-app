@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Streak</string>
+
+    <string name="home_title">Streak</string>
+    <string name="home_empty_title">No habits yet</string>
+    <string name="home_empty_body">Tap the + button to create your first habit.</string>
+    <string name="action_add_habit">Add habit</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_save">Save</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_back">Back</string>
+
+    <string name="editor_title_new">New habit</string>
+    <string name="editor_title_edit">Edit habit</string>
+    <string name="editor_name_label">Habit name</string>
+    <string name="editor_emoji_label">Icon</string>
+    <string name="editor_reminder_label">Daily reminder</string>
+    <string name="editor_reminder_none">No reminder</string>
+    <string name="editor_reminder_at">Reminder at %1$s</string>
+    <string name="editor_name_error">Please enter a name</string>
+
+    <string name="detail_title">Habit detail</string>
+    <string name="detail_current_streak">Current streak</string>
+    <string name="detail_best_streak">Best streak</string>
+    <string name="detail_total_days">Days done</string>
+    <string name="detail_last_30">Last 30 days</string>
+
+    <string name="settings_title">Settings</string>
+    <string name="settings_theme">Theme</string>
+    <string name="settings_theme_system">Follow system</string>
+    <string name="settings_theme_light">Light</string>
+    <string name="settings_theme_dark">Dark</string>
+    <string name="settings_notifications">Notifications</string>
+    <string name="settings_notifications_summary">Allow Streak to remind you about habits.</string>
+    <string name="settings_allow_notifications">Allow notifications</string>
+    <string name="settings_notifications_allowed">Notifications are enabled</string>
+    <string name="settings_notifications_blocked">Notifications are blocked. Enable them in system settings.</string>
+    <string name="settings_about">About</string>
+    <string name="settings_version">Version %1$s</string>
+
+    <string name="notification_channel_name">Habit reminders</string>
+    <string name="notification_channel_description">Daily reminders for the habits you track.</string>
+    <string name="notification_title">%1$s %2$s</string>
+    <string name="notification_body">Keep your streak going — tap to mark it done.</string>
+</resources>
