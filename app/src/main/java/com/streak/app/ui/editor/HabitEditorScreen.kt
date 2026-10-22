@@ -1,5 +1,10 @@
 package com.streak.app.ui.editor
 
+import android.Manifest
+import android.os.Build
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -63,6 +68,12 @@ fun HabitEditorScreen(
 ) {
     var showTimePicker by remember { mutableStateOf(false) }
     var showDeleteDialog by remember { mutableStateOf(false) }
+
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        Log.i("StreakEditor", "Notification permission granted: $granted")
+    }
 
     Scaffold(
         topBar = {
@@ -141,7 +152,12 @@ fun HabitEditorScreen(
                     }
                     Switch(
                         checked = state.reminderEnabled,
-                        onCheckedChange = onReminderEnabledChange
+                        onCheckedChange = { enabled ->
+                            if (enabled && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                                permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                            }
+                            onReminderEnabledChange(enabled)
+                        }
                     )
                 }
                 if (state.reminderEnabled) {

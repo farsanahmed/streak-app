@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.streak.app.data.Habit
 import com.streak.app.data.HabitRepository
 import com.streak.app.data.hasReminder
+import com.streak.app.reminders.ReminderScheduler
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -33,6 +34,7 @@ data class HabitEditorUiState(
 
 class HabitEditorViewModel(
     private val repository: HabitRepository,
+    private val reminderScheduler: ReminderScheduler,
     private val habitId: Long
 ) : ViewModel() {
 
@@ -91,7 +93,8 @@ class HabitEditorViewModel(
                 reminderMinute = if (state.reminderEnabled) state.minute else null,
                 createdAt = existing?.createdAt ?: System.currentTimeMillis()
             )
-            repository.saveHabit(habit)
+            val savedId = repository.saveHabit(habit)
+            reminderScheduler.schedule(habit.copy(id = savedId))
             _uiState.value = _uiState.value.copy(finished = true)
         }
     }
@@ -100,6 +103,7 @@ class HabitEditorViewModel(
         if (habitId <= 0L) return
         viewModelScope.launch {
             repository.deleteHabit(habitId)
+            reminderScheduler.cancel(habitId)
             _uiState.value = _uiState.value.copy(finished = true)
         }
     }
