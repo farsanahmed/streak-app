@@ -115,7 +115,7 @@ private fun HabitCard(
                     fontWeight = FontWeight.SemiBold
                 )
                 Text(
-                    text = if (item.doneToday) "Done today" else "Not done yet",
+                    text = streakLabel(item.currentStreak, item.bestStreak),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -127,9 +127,17 @@ private fun HabitCard(
     }
 }
 
+private fun streakLabel(currentStreak: Int, bestStreak: Int): String {
+    val current = when (currentStreak) {
+        0 -> "No streak yet"
+        1 -> "1 day streak"
+        else -> "$currentStreak day streak"
+    }
+    return if (bestStreak > 0) "$current · best $bestStreak" else current
+}
+
 @Composable
-private fun EmptyState(modifier: Modifier = Modifier) {
-    Column(
+private fun EmptyState(modifier: Modifier = Modifier) {    Column(
         modifier = modifier
             .fillMaxSize()
             .padding(32.dp),

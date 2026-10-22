@@ -8,7 +8,9 @@ import kotlinx.coroutines.flow.combine
 /** A habit together with the state needed to render it on the home screen. */
 data class HabitWithStatus(
     val habit: Habit,
-    val doneToday: Boolean
+    val doneToday: Boolean,
+    val currentStreak: Int,
+    val bestStreak: Int
 )
 
 /**
@@ -26,7 +28,12 @@ class HabitRepository(
             val daysByHabit = completions.groupBy { it.habitId }
             habits.map { habit ->
                 val days = daysByHabit[habit.id]?.map { it.epochDay }?.toSet().orEmpty()
-                HabitWithStatus(habit = habit, doneToday = days.contains(today))
+                HabitWithStatus(
+                    habit = habit,
+                    doneToday = days.contains(today),
+                    currentStreak = StreakCalculator.currentStreak(days, today),
+                    bestStreak = StreakCalculator.bestStreak(days)
+                )
             }
         }
 

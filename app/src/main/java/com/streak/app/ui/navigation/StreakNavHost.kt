@@ -12,6 +12,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.streak.app.ui.detail.HabitDetailScreen
+import com.streak.app.ui.detail.HabitDetailViewModel
 import com.streak.app.ui.editor.HabitEditorScreen
 import com.streak.app.ui.editor.HabitEditorViewModel
 import com.streak.app.ui.home.HomeScreen
@@ -23,8 +25,11 @@ const val NEW_HABIT_ID = 0L
 object Routes {
     const val HOME = "home"
     const val EDITOR = "editor/{habitId}"
+    const val DETAIL = "detail/{habitId}"
 
     fun editor(habitId: Long): String = "editor/$habitId"
+
+    fun detail(habitId: Long): String = "detail/$habitId"
 }
 
 @Composable
@@ -43,7 +48,7 @@ fun StreakNavHost() {
             HomeScreen(
                 habits = habits,
                 onToggle = viewModel::toggleToday,
-                onOpen = { },
+                onOpen = { navController.navigate(Routes.detail(it.habit.id)) },
                 onEdit = { navController.navigate(Routes.editor(it.habit.id)) },
                 onAdd = { navController.navigate(Routes.editor(NEW_HABIT_ID)) },
                 onSettings = { }
@@ -77,6 +82,26 @@ fun StreakNavHost() {
                 onTimeChange = editorViewModel::onTimeChange,
                 onSave = editorViewModel::save,
                 onDelete = editorViewModel::delete,
+                onBack = { navController.popBackStack() }
+            )
+        }
+
+        composable(
+            route = Routes.DETAIL,
+            arguments = listOf(navArgument("habitId") { type = NavType.LongType })
+        ) { backStackEntry ->
+            val habitId = backStackEntry.arguments?.getLong("habitId") ?: NEW_HABIT_ID
+            val detailViewModel: HabitDetailViewModel = viewModel(
+                key = "detail-$habitId",
+                factory = viewModelFactory {
+                    initializer { HabitDetailViewModel(container.habitRepository, habitId) }
+                }
+            )
+            val state by detailViewModel.uiState.collectAsStateWithLifecycle()
+
+            HabitDetailScreen(
+                state = state,
+                onToggleDay = detailViewModel::toggleDay,
                 onBack = { navController.popBackStack() }
             )
         }
